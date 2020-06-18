@@ -4,7 +4,7 @@
 
 replicaCount: 1
 ImageRepository: "xebialabs/xl-release"
-ImageTag: "8.5.0"
+ImageTag: "9.6"
 ImagePullPolicy: "Always"
 # ImagePullSecret: xlRelease
 
@@ -22,6 +22,10 @@ ingress:
        - example.com
 
 xlrDevelopmentMode: false
+AdminPassword:
+  # Provide the Credential
+xlrLicense:
+  # Provide the License
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -35,19 +39,17 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-volumes:
-  ## ERROR: Using /usr/local/* results in this error,
-  ## Warning  FailedMount  3s (x6 over 19s)  kubelet, MountVolume.SetUp failed for volume "xlr-bootstrap" : mkdir /usr/local/xlr-bootstrap: read-only file system
-  ## Warning  FailedMount  3s (x6 over 19s)  kubelet, MountVolume.SetUp failed for volume "xlr-data" : mkdir /usr/local/xlr-data: read-only file system
-  ## By passed by changing /usr to /tmp, this fails with EULA agreement error.
-  - name: xlr-bootstrap
-    hostPath:
-      path: /usr/local/xlr-bootstrap
-      type: DirectoryOrCreate
-  - name: xlr-data
-    hostPath:
-      path: /usr/local/xlr-data
-      type: DirectoryOrCreate
+UseExternaldb:
+  enabled: false
+  # If you want to use external database, change the the value to "true". Uncomment the following lines and provide the values.
+  # XLR_DB_URL:
+  # XLR_DB_USER:
+  # XLR_DB_PASS:
+  # XLR_DB_NAME:
+  # XLR_REPORT_DB_URL:
+  # XLR_REPORT_DB_NAME:
+  # XLR_REPORT_DB_USER:
+  # XLR_REPORT_DB_PASS:
 
 HealthProbes: true
 HealthProbesLivenessTimeout: 60
@@ -62,9 +64,9 @@ tolerations: []
 affinity: {}
 
 Persistence:
-  Enabled: false
+  Enabled: true
   ## Choose storage class provided by your cloud provider, example "ssd" on GKE, AWS and OpenStack
-  # StorageClass: "-"
+  StorageClass: "-"
   Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 10Gi
