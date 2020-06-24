@@ -1,16 +1,15 @@
 {{$XLR_ADMIN_PASS := .Values.AdminPassword | default "admin"}}
-{{$XLR_DB_NAME := .Values.UseExternaldb.XLR_DB_NAME | default "xlr-db"}}
-{{$XLR_DB_USER := .Values.UseExternaldb.XLR_REPORT_DB_USER | default "xlr"}}
-{{$XLR_DB_PASS := .Values.UseExternaldb.XLR_REPORT_DB_PASS | default "xlr"}}
-{{$XLR_REPORT_DB_NAME := .Values.UseExternaldb.XLR_REPORT_DB_NAME | default "xlr-report-db"}}
-{{$XLR_REPORT_DB_USER := .Values.UseExternaldb.XLR_REPORT_DB_USER | default "xlr-report"}}
-{{$XLR_REPORT_DB_PASS := .Values.UseExternaldb.XLR_REPORT_DB_PASS | default "xlr-report"}}
-
-{{- if not .Values.UseExternaldb.enabled }}
+{{$XLR_DB_NAME := .Values.UseExistingDB.XLR_DB_NAME | default "xlr-db"}}
+{{$XLR_DB_USER := .Values.UseExistingDB.XLR_REPORT_DB_USER | default "xlr"}}
+{{$XLR_DB_PASS := .Values.UseExistingDB.XLR_REPORT_DB_PASS | default "xlr"}}
+{{$XLR_REPORT_DB_NAME := .Values.UseExistingDB.XLR_REPORT_DB_NAME | default "xlr-report-db"}}
+{{$XLR_REPORT_DB_USER := .Values.UseExistingDB.XLR_REPORT_DB_USER | default "xlr-report"}}
+{{$XLR_REPORT_DB_PASS := .Values.UseExistingDB.XLR_REPORT_DB_PASS | default "xlr-report"}}
+{{- if not .Values.UseExistingDB.Enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: postgresql-init-sql-xlr
+  name: {{ template "xl-release.fullname" . }}-postgresql
   labels:
     app: {{ template "xl-release.name" . }}
     chart: {{ template "xl-release.chart" . }}
@@ -64,7 +63,7 @@ spec:
         app: {{ template "xl-release.name" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if not .Values.UseExternaldb.enabled }}
+      {{- if not .Values.UseExistingDB.Enabled }}
       initContainers:
         - name: wait-for-db
           image: xebialabs/tiny-tools
@@ -77,7 +76,7 @@ spec:
               done;
           env:
            - name: POSTGRES_SVC
-             value: postgresql
+             value: {{ template "xl-release.fullname" . }}-postgresql
            - name: POSTGRES_PORT
              value: "5432"
         - name: create-db
@@ -92,7 +91,7 @@ spec:
             - name: POSTGRES_DB
               value: postgres
             - name: POSTGRES_HOST
-              value: postgresql
+              value: {{ template "xl-release.fullname" . }}-postgresql
           volumeMounts:
             - name: postgresql-init-sql-xlr
               subPath: init-sql.sh
@@ -133,20 +132,20 @@ spec:
             - name: XLR_DEVELOPMENT_MODE
               value: "{{ .Values.xlrDevelopmentMode }}"
             - name: XL_DB_URL
-              {{- if not .Values.UseExternaldb.enabled }}
-              value: jdbc:postgresql://postgresql:5432/{{$XLR_DB_NAME}}
+              {{- if not .Values.UseExistingDB.Enabled }}
+              value: jdbc:postgresql://{{ template "xl-release.fullname" . }}-postgresql:5432/{{$XLR_DB_NAME}}
               {{- else }}
-              value: {{ .Values.UseExternaldb.XLR_DB_URL }}
+              value: {{ .Values.UseExistingDB.XLR_DB_URL }}
               {{- end }}
             - name: XL_DB_USERNAME
               value: {{$XLR_DB_USER}}
             - name: XL_DB_PASSWORD
               value: "{{$XLR_DB_PASS}}"
             - name: XL_REPORT_DB_URL
-              {{- if not .Values.UseExternaldb.enabled }}
-              value: jdbc:postgresql://postgresql:5432/{{$XLR_REPORT_DB_NAME}}
+              {{- if not .Values.UseExistingDB.Enabled }}
+              value: jdbc:postgresql://{{ template "xl-release.fullname" . }}-postgresql:5432/{{$XLR_REPORT_DB_NAME}}
               {{- else }}
-              value: {{ .Values.UseExternaldb.XL_REPORT_DB_URL }}
+              value: {{ .Values.UseExistingDB.XL_REPORT_DB_URL }}
               {{- end }}
             - name: XL_REPORT_DB_USERNAME
               value: {{$XLR_REPORT_DB_USER}}
@@ -155,10 +154,10 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
-        {{- if not .Values.UseExternaldb.enabled }}
+        {{- if not .Values.UseExistingDB.Enabled }}
         - name: postgresql-init-sql-xlr
           configMap:
-            name: postgresql-init-sql-xlr
+            name: {{ template "xl-release.fullname" . }}-postgresql
             defaultMode: 0777
         {{- end }}
         - name: reports-dir

@@ -39,8 +39,8 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-UseExternaldb:
-  enabled: false
+UseExistingDB:
+  Enabled: false
   # If you want to use external database, change the the value to "true". Uncomment the following lines and provide the values.
   # XLR_DB_URL:
   # XLR_DB_USER:

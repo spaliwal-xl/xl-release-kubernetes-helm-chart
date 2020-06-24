@@ -1,8 +1,8 @@
-{{- if not .Values.UseExternaldb.enabled }}
+{{- if not .Values.UseExistingDB.Enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql
+  name: {{ template "xl-release.fullname" . }}-postgresql
   labels:
     app: {{ template "xl-release.name" . }}
     chart: {{ template "xl-release.chart" . }}
@@ -18,14 +18,14 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgresql
+  name: {{ template "xl-release.fullname" . }}-postgresql
   labels:
     app: {{ template "xl-release.name" . }}
     chart: {{ template "xl-release.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: postgresql
+  serviceName: {{ template "xl-release.fullname" . }}-postgresql
   replicas: 1
   selector:
     matchLabels:
@@ -64,7 +64,7 @@ spec:
               name: data
 
       containers:
-        - name: postgresql
+        - name: {{ template "xl-release.fullname" . }}-postgresql
           image: postgres:10.5
           command: ["docker-entrypoint.sh"]
           args:
