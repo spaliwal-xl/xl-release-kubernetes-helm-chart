@@ -33,6 +33,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: xlr-http-svc
+              servicePort: xlr-http
   {{- end }}
 {{- end -}}
