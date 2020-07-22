@@ -94,7 +94,7 @@ spec:
               {{- if not .Values.UseExistingDB.Enabled }}
               value: jdbc:postgresql://{{ template "xl-release.fullname" . }}-postgresql:5432/xlr-report-db
               {{- else }}
-              value: {{ .Values.UseExistingDB.XL_REPORT_DB_URL }}
+              value: {{ .Values.UseExistingDB.XLR_REPORT_DB_URL }}
               {{- end }}
             - name: XL_REPORT_DB_USERNAME
               value: {{$XLR_REPORT_DB_USER}}
