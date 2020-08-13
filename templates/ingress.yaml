@@ -1,3 +1,4 @@
+{{- if or (eq .Values.K8sSetup.Platform "PlainK8s") (eq .Values.K8sSetup.Platform "AWSEKS")}}
 {{- if and .Values.ingress.Enabled -}}
 {{- $fullName := include "xl-release.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
@@ -35,4 +36,5 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: xlr-http
   {{- end }}
+{{- end -}}
 {{- end -}}
