@@ -4,11 +4,12 @@
 
 #Platform on which to deploy(PlainK8s/AWSEKS/Openshift)
 K8sSetup:
-  Platform: # Provide the Platform
+  Platform: Openshift
+  # Provide the Platform
 
 replicaCount: 2
-ImageRepository: "xebialabs/xl-release"
-ImageTag: "9.7"
+ImageRepository: "xebialabsunsupported/xl-release"
+ImageTag: "9.7-ext-mq"
 ImagePullPolicy: "Always"
 # ImagePullSecret: xlRelease
 
@@ -71,6 +72,17 @@ UseExistingDB:
   # XLR_REPORT_DB_URL:
   # XLR_REPORT_DB_USER:
   # XLR_REPORT_DB_PASS:
+
+MessageQueue:
+# Provide the details of your message queue deployments.
+  ENABLE_EMBEDDED_QUEUE: true
+  # If you want to use external message queue, change the the value to "false".
+  XLR_TASK_QUEUE_URL: 
+  # amqp://active-artemis-servicename.namespace.svc.cluster.local:61616
+  # Only amqp protocol is supported 
+  XLR_TASK_QUEUE_USERNAME: 
+  XLR_TASK_QUEUE_PASSWORD: 
+  XLR_TASK_QUEUE_NAME: 
 
 HealthProbes: true
 HealthProbesLivenessTimeout: 90

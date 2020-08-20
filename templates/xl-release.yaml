@@ -3,6 +3,11 @@
 {{$XLR_DB_PASS := .Values.UseExistingDB.XLR_DB_PASS | default "xlr"}}
 {{$XLR_REPORT_DB_USER := .Values.UseExistingDB.XLR_REPORT_DB_USER | default "xlr-report"}}
 {{$XLR_REPORT_DB_PASS := .Values.UseExistingDB.XLR_REPORT_DB_PASS | default "xlr-report"}}
+{{$ENABLE_EMBEDDED_QUEUE := .Values.MessageQueue.ENABLE_EMBEDDED_QUEUE | default "false"}}
+{{$XLR_TASK_QUEUE_USERNAME := .Values.MessageQueue.XLR_TASK_QUEUE_USERNAME | default "admin"}}
+{{$XLR_TASK_QUEUE_PASSWORD := .Values.MessageQueue.XLR_TASK_QUEUE_PASSWORD | default "admin"}}
+{{$XLR_TASK_QUEUE_URL := .Values.MessageQueue.XLR_TASK_QUEUE_URL | default "amqp://127.0.0.1:61616"}}
+{{$XLR_TASK_QUEUE_NAME := .Values.MessageQueue.XLR_TASK_QUEUE_NAME | default "xlr-tasks-queue"}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -104,6 +109,16 @@ spec:
               value: "false"
             - name: FORCE_UPGRADE
               value: "true"
+            - name: ENABLE_EMBEDDED_QUEUE
+              value: "{{$ENABLE_EMBEDDED_QUEUE}}"
+            - name: XLR_TASK_QUEUE_USERNAME
+              value: "{{$XLR_TASK_QUEUE_USERNAME}}"
+            - name: XLR_TASK_QUEUE_PASSWORD
+              value: "{{$XLR_TASK_QUEUE_PASSWORD}}"
+            - name: XLR_TASK_QUEUE_URL
+              value: "{{$XLR_TASK_QUEUE_URL}}"
+            - name: XLR_TASK_QUEUE_NAME
+              value: "{{$XLR_TASK_QUEUE_NAME}}"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
