@@ -119,6 +119,10 @@ spec:
               value: "{{$XLR_TASK_QUEUE_URL}}"
             - name: XLR_TASK_QUEUE_NAME
               value: "{{$XLR_TASK_QUEUE_NAME}}"
+            - name: REPOSITORY_KEYSTORE
+              value: {{ .Values.RepositoryKeystore }}
+            - name: REPOSITORY_KEYSTORE_PASSPHRASE
+              value: {{ .Values.KeystorePassphrase }}    
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
