@@ -8,6 +8,9 @@ def InstallChart (String release) {
 pipeline {
 
     agent none
+    tools {
+        helm 'helm-3.0.0' 
+    }
     parameters {
         string(name: 'RELEASE_BRANCH_NAME', defaultValue: 'master', description: 'The branch from which to make the release')
         booleanParam(name: 'Install_Chart', defaultValue: false, description: 'Do you want to install the chart')
