@@ -26,8 +26,8 @@ pipeline {
                 script {
                   if ( env.BRANCH_NAME == 'master' && env.PRODUCT == 'XL Release' ){
                     try{
-                      echo "checking out the code for ${params.PRODUCT} from ${params.BRANCH} branch"
-                      sh "git clone -b ${params.BRANCH} ${env.GIT_HUB_XLR_URL}"
+                      echo "checking out the code for ${params.PRODUCT} from ${env.BRANCH_NAME} branch"
+                      sh "git clone -b ${env.BRANCH_NAME} ${env.GIT_HUB_XLR_URL}"
                       echo "Git checkout successful"
                     }catch (error){
                       echo "checkout failed"
@@ -35,8 +35,8 @@ pipeline {
                       }
                   } else {
                   	try{
-                  	  echo "checking out the code for ${params.PRODUCT} from ${params.BRANCH} branch"
-                  	  sh "git clone -b ${params.BRANCH} ${env.GIT_HUB_XLD_URL}"
+                  	  echo "checking out the code for ${params.PRODUCT} from ${env.BRANCH_NAME} branch"
+                  	  sh "git clone -b ${env.BRANCH_NAME} ${env.GIT_HUB_XLD_URL}"
                       echo "Git checkout successful"
                   	}catch(error){
                   	  echo "checkout failed"
