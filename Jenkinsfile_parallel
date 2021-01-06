@@ -296,7 +296,7 @@ pipeline{
                     steps {
                         script {
                             withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_CRED', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                                withKubeConfig(caCertificate: '', clusterName: 'eks-pipeline', contextName: 'spaliwal@eks-pipeline.eu-west-1.eksctl.io', credentialsId: 'EKS_CONFIG', namespace: 'pipeline', serverUrl: 'https://634BE0CB20CB3C6E85E62C9407787F66.sk1.eu-west-1.eks.amazonaws.com') {
+                                withKubeConfig(caCertificate: '', clusterName: 'devops-pipeline', contextName: 'spaliwal@devops-pipeline.eu-west-2.eksctl.io', credentialsId: 'EKS_CONFIG', namespace: 'pipeline', serverUrl: 'https://048C1D825717485A7D739C95C0184F18.gr7.eu-west-2.eks.amazonaws.com') {
                                     if ( env.PRODUCT_NAME == 'XL Release' && env.PLATFORM_NAME == 'EKS' ) {
                                         try {
                                             echo "Installing $PRODUCT_NAME chart on $PLATFORM_NAME platform"
@@ -304,7 +304,7 @@ pipeline{
                                                 withCredentials([string(credentialsId: 'XLR_KEYSTORE', variable: 'XLR_KEYSTORE')]) {
                                                     withCredentials([string(credentialsId: 'XLR_PASS_PHRASE', variable: 'XLR_PASS_PHRASE')]) {
                                                     sh '''
-                                                            /usr/local/bin/kubectl config set-context --current --namespace=default
+                                                            /usr/local/bin/kubectl config set-context --current --namespace=pipeline
                                                             /usr/local/bin/helm install --generate-name *.tgz --set ingress.hosts[0]=$HOST_NAME_XLR_EKS --set haproxy-ingress.controller.service.type=${LOADBALANCER} --set xlrLicense=${XLR_LICENSE} --set RepositoryKeystore=${XLR_KEYSTORE} --set KeystorePassphrase=${XLR_PASS_PHRASE} --set Persistence.StorageClass=$STORAGE_CLASS_EKS
                                                             sleep 5
                                                             /usr/local/bin/kubectl get svc
