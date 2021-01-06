@@ -36,7 +36,7 @@ pipeline{
         HOST_NAME_XLR_OPENSHIFT = "release.apps.ocp-qa.xldevinfra.com"
         HOST_NAME_XLD_OPENSHIFT = "deploy.apps.ocp-qa.xldevinfra.com"
         STORAGE_CLASS_ONPREM = "nfs-client"
-        STORAGE_CLASS_EKS = "gp2"
+        STORAGE_CLASS_EKS = "aws-efs"
         LOADBALANCER = "LoadBalancer"
         OPENSHIFT_AWS_CRED = credentials('OPENSHIFT_AWS_CRED')
         OPENSHIFT_AWS_SERVER_URL = "https://api.ocp-qa.xldevinfra.com:6443"
@@ -325,7 +325,7 @@ pipeline{
                                                 withCredentials([string(credentialsId: 'XLD_KEYSTORE', variable: 'XLD_KEYSTORE')]) {
                                                     withCredentials([string(credentialsId: 'XLD_PASS_PHRASE', variable: 'XLD_PASS_PHRASE')]) {
                                                         sh '''
-                                                            /usr/local/bin/kubectl config set-context --current --namespace=default
+                                                            /usr/local/bin/kubectl config set-context --current --namespace=pipeline
                                                             /usr/local/bin/helm install --generate-name *.tgz --set ingress.hosts[0]=$HOST_NAME_XLD_EKS --set haproxy-ingress.controller.service.type=${LOADBALANCER} --set xldLicense=${XLD_LICENSE} --set RepositoryKeystore=${XLD_KEYSTORE} --set KeystorePassphrase=${XLD_PASS_PHRASE} --set Persistence.StorageClass=$STORAGE_CLASS_EKS
                                                             sleep 5
                                                             /usr/local/bin/kubectl get svc
